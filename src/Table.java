@@ -1,11 +1,9 @@
 import javax.swing.*;
-import java.awt.*;
+
 import java.awt.event.ActionEvent;
 
 import java.awt.event.ActionListener;
-import java.lang.reflect.Array;
-import java.util.ArrayList;
-import java.util.List;
+
 import java.util.Random;
 
 /**
@@ -23,9 +21,10 @@ public class Table {
         elements = new String[sumEl][sumEl];
         table = new JTable(elements,columnNames);
 
-        JButton button = new JButton("Заполнить");
+        JButton button = new JButton("Сгенерировать");
         GenListener genListener = new GenListener(this,sumEl);
         button.addActionListener(genListener);
+
            panel.add(table);
            panel.add(button);
            genTable();
@@ -38,7 +37,7 @@ public class Table {
         return elements[row][column];
     }
 
-    void sortTable()
+   public void sortTable()
     {
         for(int i=0;i<sumEl;i++)
           for(int j=sumEl-1;j>i;j--)
@@ -57,7 +56,7 @@ public class Table {
     }
 
 
-    void genTable()
+    public void genTable()
     {
         Random random = new Random();
         int a[];
@@ -94,9 +93,11 @@ class GenListener implements ActionListener
         {  Table table;
            int sumEl;
 
-           public GenListener(Table table,int sumEl){this.table=table;
-
-           this.sumEl=sumEl;}
+           public GenListener(Table table,int sumEl)
+           {
+               this.table=table;
+               this.sumEl=sumEl;
+           }
 
 
 @Override
@@ -125,6 +126,8 @@ public void actionPerformed(ActionEvent e) {
                  table.table.setValueAt(Integer.toString(count),index,0);
                  table.table.setValueAt(String.valueOf(spendTime-startTime),index,1);
              }
+             table.sortTable();
         }
+
 
         }

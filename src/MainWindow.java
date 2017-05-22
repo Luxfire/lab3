@@ -10,7 +10,8 @@ import java.awt.event.ActionListener;
 public class MainWindow {
     JFrame frame;
     JPanel panelTable;
-    JPanel panelGraphic;
+    Table table;
+
     MainWindow()
     {
         frame = new JFrame("Uh");
@@ -20,20 +21,38 @@ public class MainWindow {
 
         panelTable = new JPanel();
         panelTable.setLayout(new BoxLayout(panelTable,BoxLayout.Y_AXIS));
-        Table table = new Table(panelTable);
+        table = new Table(panelTable);
+
+        Graphic graphic = new Graphic(this);
+
+       JScrollPane scrollPane = new JScrollPane(graphic);
+
 
         JButton buttonCreateGraphic = new JButton("Построить");
+        buttonCreateGraphic.addActionListener(new Create(this));
+
+       graphic.setPreferredSize(new Dimension(200,200));
         panelTable.add(buttonCreateGraphic);
-
-        panelGraphic = new JPanel();
-        panelGraphic.setLayout(new BorderLayout());
-        panelGraphic.add(new Graphic(table));
-
-        frame.add(panelGraphic,BorderLayout.CENTER);
+        frame.add(scrollPane,BorderLayout.CENTER);
         frame .add(panelTable,BorderLayout.WEST);
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         frame.setLocationRelativeTo(null);
         frame.setVisible(true);
     }
-}
 
+
+    class Create implements ActionListener
+    {   MainWindow mainWindow;
+
+        Create(MainWindow mainWindow){
+            this.mainWindow =mainWindow;}
+
+        @Override
+        public void actionPerformed(ActionEvent e) {
+            Graphic graphic = new Graphic(mainWindow);
+            frame.add(graphic,BorderLayout.CENTER);
+            frame.repaint();
+            frame.revalidate();
+        }
+    }
+}

@@ -5,7 +5,9 @@
 
 public class Main {
     public static void main (String [] args) {
-        MainWindow mainWindow = new MainWindow();
+        Model model = new Model();
+        Controller controller = new Controller(model);
+        MainWindow mainWindow = new MainWindow(controller);
     }
 
 }

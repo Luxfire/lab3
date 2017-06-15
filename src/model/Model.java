@@ -1,15 +1,67 @@
+package model;
+
 import java.awt.*;
 import java.util.Random;
 
 public class Model {
-    int[][] arrayResult;
-    Point startPoint = new Point();
-    Point oldPoint = new Point();
-    int sumEl = 19;
-    int currentX=0;
-    int currentY=0;
+    private int[][] arrayResult;
+    private Point startPoint = new Point();
+    private Point oldPoint = new Point();
+    private int sumEl = 19;
+    private int currentX=0;
+    private int currentY=0;
+    private double scale = 1;
 
-    Model() {
+    public int getArrayResult(int massiveSize, int sortTime) {
+        return arrayResult[massiveSize][sortTime];
+    }
+
+    public Point getStartPoint() {
+        return startPoint;
+    }
+
+    public Point getOldPoint() {
+        return oldPoint;
+    }
+
+    public int getSumEl() {
+        return sumEl;
+    }
+
+    public int getCurrentX() {
+        return currentX;
+    }
+
+    public int getCurrentY() {
+        return currentY;
+    }
+
+    public double getScale() {
+        return scale;
+    }
+
+    public void setStartPoint(Point startPoint) {
+        this.startPoint = startPoint;
+    }
+
+    public void setOldPoint(Point oldPoint) {
+        this.oldPoint = oldPoint;
+    }
+
+    public void setCurrentX(int currentX) {
+        this.currentX += currentX;
+    }
+
+    public void setCurrentY(int currentY) {
+        this.currentY += currentY;
+    }
+
+    public void scalePlus() {scale+=0.1;}
+
+    public void scaleMinus() {scale-=0.1;}
+
+
+   public Model() {
         arrayResult = new int[sumEl][2];
     }
 

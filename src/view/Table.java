@@ -1,17 +1,26 @@
+package view;
+
+import controller.Controller;
+
 import javax.swing.*;
 import javax.swing.table.DefaultTableModel;
 
 
 public class Table {
-    JTable table;
-    Controller controller;
-    DefaultTableModel tableModel;
+    private JTable table;
+    private Controller controller;
+    private DefaultTableModel tableModel;
+
+    public JTable getTable() {
+        return table;
+    }
 
     Table(Controller controller)
     {
+
         this.controller=controller;
         String[] columnNames= {"Кол-во элементов в массиве", "Время сортировки"};
-       tableModel = new DefaultTableModel(columnNames,controller.getSumEl());
+        tableModel = new DefaultTableModel(columnNames,controller.getSumEl());
         table = new JTable(tableModel);
     }
 

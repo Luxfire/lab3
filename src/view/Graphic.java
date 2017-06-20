@@ -13,14 +13,15 @@ import java.awt.Font;
  */
 public  class Graphic extends JPanel {
    private MainWindow mainWindow;
-   private int currWH=500;
+   private int currWidth=500;
+   private int currHeight=500;
    private Controller controller;
 
    public Graphic(MainWindow mainWindow)
     {
         controller = mainWindow.getController();
-        setPreferredSize(new Dimension(currWH,currWH));
-        setSize(currWH,currWH);
+        setPreferredSize(new Dimension(currWidth,currHeight));
+        setSize(currWidth,currHeight);
         this.mainWindow=mainWindow;
 
         addMouseListener(new MouseAdapterListener(mainWindow.getController()));
@@ -40,13 +41,18 @@ public  class Graphic extends JPanel {
 
                     controller.scaleMinus();
 
-                    if(currWH>scale*500)
+                    if(currWidth>scale*500)
                     {
-                        currWH=(int)(500*scale);
-                        setPreferredSize(new Dimension(currWH,currWH));
-                        setSize(currWH,currWH);
-                        if(currWH<500) currWH=500;
+                        currWidth=(int)(500*scale);
+                        if(currWidth<500) currWidth=500;
                     }
+                    if(currHeight>scale*500)
+                    {
+                        currHeight=(int)(500*scale);
+                        if(currHeight<500) currHeight=500;
+                    }
+                    setPreferredSize(new Dimension(currWidth,currHeight));
+                    setSize(currWidth,currHeight);
                     mainWindow.getLabelSize().setText(" Масштаб:"+(int)(scale*100)+"%");
                     mainWindow.getFrame().repaint();
                 }
@@ -54,11 +60,13 @@ public  class Graphic extends JPanel {
 
                     controller.scalePlus();
 
-                    if(currWH<scale*500) {
-                        currWH = (int) (500 * scale);
-                        setPreferredSize(new Dimension(currWH, currWH));
-                        setSize(currWH, currWH);
-                    }
+                    if(currWidth<scale*500)
+                        currWidth = (int) (500 * scale);
+                    if(currHeight<scale*500)
+                        currHeight = (int) (500 * scale);
+
+                    setPreferredSize(new Dimension(currWidth, currHeight));
+                    setSize(currWidth, currHeight);
 
                     mainWindow.getLabelSize().setText(" Масштаб:"+(int)(scale*100)+"%");
                     mainWindow.getFrame().repaint();
@@ -82,20 +90,14 @@ public  class Graphic extends JPanel {
         endGraphic.x= (int)(scale*( 0.15*maxEl+120));
         endGraphic.y= (int)(scale*( 80+15*(sumEl+1)));
 
-       if(currWH<currentX+endGraphic.x+100)
-       {
-           currWH=currentX+endGraphic.x+100;
-           setPreferredSize(new Dimension(currWH,currWH));
-           setSize(currWH,currWH);
-     }
+       if(currWidth!=currentX+endGraphic.x+100)
+           currWidth=currentX+endGraphic.x+100;
 
-        if(currWH<currentY+endGraphic.y+100)
-        {
-            currWH=currentY+endGraphic.y+100;
-            setPreferredSize(new Dimension(currWH,currWH));
-            setSize(currWH,currWH);
-        }
+        if(currHeight!=currentY+endGraphic.y+100)
+            currHeight=currentY+endGraphic.y+100;
 
+        setPreferredSize(new Dimension(currWidth,currHeight));
+        setSize(currWidth,currHeight);
 
         if(currentX<0) currentX=0;
         if(currentY<0) currentY=0;

@@ -26,6 +26,12 @@ public  class Graphic extends JPanel {
         addMouseListener(new MouseAdapterListener(mainWindow.getController()));
         addMouseMotionListener(new MouseMotionListener(mainWindow));
 
+         wheelListener();
+
+    }
+
+    public void wheelListener()
+    {
         addMouseWheelListener(e -> {
             if (e.isControlDown()){
 
@@ -36,10 +42,10 @@ public  class Graphic extends JPanel {
 
                     if(currWH>scale*500)
                     {
-                    currWH=(int)(500*scale);
-                    setPreferredSize(new Dimension(currWH,currWH));
-                    setSize(currWH,currWH);
-                    if(currWH<500) currWH=500;
+                        currWH=(int)(500*scale);
+                        setPreferredSize(new Dimension(currWH,currWH));
+                        setSize(currWH,currWH);
+                        if(currWH<500) currWH=500;
                     }
                     mainWindow.getLabelSize().setText(" Масштаб:"+(int)(scale*100)+"%");
                     mainWindow.getFrame().repaint();
@@ -60,69 +66,76 @@ public  class Graphic extends JPanel {
 
             }
         });
-
     }
 
     protected void paintComponent(Graphics gh) {
 
+
         Graphics2D drp = (Graphics2D)gh;
+        int sumEl = controller.getSumEl();
         int currentX = controller.getCurrX();
         int currentY = controller.getCurrY();
         double scale = controller.getScale();
+        int maxEl = mainWindow.getTable().getMaxEl();
 
        Point endGraphic= new Point();
-        endGraphic.x= (int)(scale*( 330));
-        endGraphic.y= (int)(scale*( 330));
+        endGraphic.x= (int)(scale*( 0.15*maxEl+120));
+        endGraphic.y= (int)(scale*( 80+15*(sumEl+1)));
 
-       if(currentX+endGraphic.x>currWH) {currWH=currentX+endGraphic.x+10;
-       setPreferredSize(new Dimension(currWH,currWH));
-       setSize(currWH,currWH);
+       if(currWH<currentX+endGraphic.x+100)
+       {
+           currWH=currentX+endGraphic.x+100;
+           setPreferredSize(new Dimension(currWH,currWH));
+           setSize(currWH,currWH);
      }
 
-        if(currentY+endGraphic.y+100>currWH) {currWH=currentY+endGraphic.y+100;
+        if(currWH<currentY+endGraphic.y+100)
+        {
+            currWH=currentY+endGraphic.y+100;
             setPreferredSize(new Dimension(currWH,currWH));
             setSize(currWH,currWH);
         }
-
 
 
         if(currentX<0) currentX=0;
         if(currentY<0) currentY=0;
 
         drp.setFont(new Font(null, Font.PLAIN,  (int)(scale*(drp.getFont().getSize()))));
-        drp.drawLine(currentX+(int)(scale*(30 )),currentY+(int)(scale*(330)),currentX+(int)(scale*( 30)),currentY+(int)(scale*(30 )));
-        drp.drawLine(currentX+(int)(scale*(30 )),currentY+(int)(scale*(330)),currentX+(int)(scale*(330)),currentY+(int)(scale*(330)));
+        drp.drawLine(currentX+(int)(scale*(30 )),currentY+(int)(scale*(30)),currentX+(int)(scale*( 30)),currentY+(int)(scale*(30+15*(sumEl+1) )));//---------ок
+        drp.drawLine(currentX+(int)(scale*(30 )),currentY+(int)(scale*(30+15*(sumEl+1))),currentX+(int)(scale*(0.15*maxEl+70)),currentY+(int)(scale*(30+15*(sumEl+1))));//---------ок
 
-        drp.drawLine(currentX+(int)(scale*(30 )),currentY+(int)(scale*(30 )),currentX+(int)(scale*( 35)),currentY+(int)(scale*(35 )));
-        drp.drawLine(currentX+(int)(scale*(30 )),currentY+(int)(scale*(30 )),currentX+(int)(scale*( 25)),currentY+(int)(scale*(35 )));
+        drp.drawLine(currentX+(int)(scale*(30 )),currentY+(int)(scale*(30 )),currentX+(int)(scale*( 35)),currentY+(int)(scale*(35 )));//---------ок
+        drp.drawLine(currentX+(int)(scale*(30 )),currentY+(int)(scale*(30 )),currentX+(int)(scale*( 25)),currentY+(int)(scale*(35 )));//---------ок
 
-        drp.drawLine(currentX+(int)(scale*(330)),currentY+(int)(scale*(330)),currentX+(int)(scale*(325)),currentY+(int)(scale*(335)));
-        drp.drawLine(currentX+(int)(scale*(330)),currentY+(int)(scale*(330)),currentX+(int)(scale*(325)),currentY+(int)(scale*(325)));
+        drp.drawLine(currentX+(int)(scale*(0.15*maxEl+70)),currentY+(int)(scale*(30+15*(sumEl+1))),currentX+(int)(scale*(0.15*maxEl+70-5)),currentY+(int)(scale*(35+15*(sumEl+1))));//---------ок
+        drp.drawLine(currentX+(int)(scale*(0.15*maxEl+70)),currentY+(int)(scale*(30+15*(sumEl+1))),currentX+(int)(scale*(0.15*maxEl+70-5)),currentY+(int)(scale*(25+15*(sumEl+1))));//---------ок
 
-        for(int yScala = 0; yScala<20;yScala++)
+        for(int yScala = 0; yScala<sumEl+1;yScala++)//---------ок
         {
-            int vs =20-yScala;
+            int vs =sumEl+1-yScala;
             drp.drawString(vs+"",currentX+(int)(scale*(15)),currentY+(int)(scale*(yScala * 15 + 30)));
-                    drp.drawLine(currentX+(int)(scale*(25)),currentY+(int)(scale*(yScala * 15 + 30)),currentX+ (int)(scale*(330)), currentY+(int)(scale*(yScala * 15 + 30)));
+                    drp.drawLine(currentX+(int)(scale*(25)),currentY+(int)(scale*(yScala * 15 + 30)),currentX+ (int)(scale*(0.15*maxEl+70)), currentY+(int)(scale*(yScala * 15 + 30)));
         }
 
-        for(int xScale =0;xScale<10;xScale++)
-        {
+        int xScale=0;
+
+        do{
             String vs = xScale*200+200+"";
             for(int shiftEL=0; shiftEL<vs.length();shiftEL++)
-                drp.drawString(vs.substring(shiftEL,shiftEL+1),currentX+(int)(scale*(60+xScale*30)),currentY+(int)(scale*(340+shiftEL*10)));
-            drp.drawLine(currentX+(int)(scale*(xScale*30+60)),currentY+(int)(scale*(335)),currentX+(int)(scale*(xScale*30+60)),currentY+(int)(scale*(30)));
-        }
+                drp.drawString(vs.substring(shiftEL,shiftEL+1),currentX+(int)(scale*(60+xScale*30)),currentY+(int)(scale*(30+15*(sumEl+1)+10+shiftEL*10)));
+            drp.drawLine(currentX+(int)(scale*(xScale*30+60)),currentY+(int)(scale*(30+15*(sumEl+1)+5)),currentX+(int)(scale*(xScale*30+60)),currentY+(int)(scale*(30)));
+            xScale++;
+        }while(xScale*200<maxEl+70);
 
-        drp.drawString("0",currentX+(int)(scale*(15)),currentY+(int)(scale*(330)));
+        drp.drawString("0",currentX+(int)(scale*(15)),currentY+(int)(scale*(30+15*(sumEl+1) )));
 
          Table jTable = mainWindow.getTable();
         for(int index=0;index<controller.getSumEl()-1;index++ )
         {
-            int y1 = currentY+ (int)(scale*((330-15*jTable.getValue(index,0))));
+            int y1 = currentY+ (int)(scale*(((30+15*(sumEl+1)) -15*jTable.getValue(index,0))));//----------------
             int x1 = currentX+ (int)(scale*((int) (30+0.15*jTable.getValue(index,1))));
 
-            int y2 = currentY+ (int)(scale*((330-15*jTable.getValue(index+1,0))));
+            int y2 = currentY+ (int)(scale*(((30+15*(sumEl+1))-15*jTable.getValue(index+1,0))));//-------------
             int x2 = currentX+ (int)(scale*((int) (30+0.15*jTable.getValue(index+1,1))));
 
             drp.setStroke(new BasicStroke(3));
@@ -131,13 +144,12 @@ public  class Graphic extends JPanel {
             drp.drawLine(x1,y1,x2,y2);
         }
 
-        drp.drawString("Время сортировки",currentX+ (int)(scale*(150)),currentY+(int)(scale*(390)));
+        drp.drawString("Время сортировки",currentX+ (int)(scale*(40)),currentY+(int)(scale*(90+15*(sumEl+1))));
 
-        String sumEl = "Количество элементов";
-        for(int yScaleName=0; yScaleName<sumEl.length();yScaleName++)
-            drp.drawString(sumEl.substring(yScaleName,yScaleName+1),currentX,currentY+(int)(scale*(90+yScaleName*10)));
+        String sumEl1 = "Количество элементов";
+        for(int yScaleName=0; yScaleName<sumEl1.length();yScaleName++)
+            drp.drawString(sumEl1.substring(yScaleName,yScaleName+1),currentX,currentY+(int)(scale*((30+15*(sumEl+1)-200)+yScaleName*10)));
     }
-
 
 }
 

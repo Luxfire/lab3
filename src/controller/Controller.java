@@ -15,10 +15,6 @@ public class Controller {
         return model.getArrayResult(massiveSize,sortTime);
     }
 
-    public void genArray()
-    {
-        model.genArray();
-    }
     public Point getOldPoint()
     {
         return model.getOldPoint();
@@ -44,5 +40,5 @@ public class Controller {
     {
         model.setStartPoint(startPoint);
     }
-
+    public void setSumEl(int sumEl){model.setSumEl(sumEl);}
 }

@@ -1,13 +1,13 @@
 package view;
 
 import controller.Controller;
+import view.listeners.ChangeElListener;
 import view.listeners.CreateGraphicListener;
 import view.listeners.GenTableListener;
 
 import javax.swing.*;
 import java.awt.*;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
+
 
 public class MainWindow {
     private Controller controller;
@@ -33,10 +33,6 @@ public class MainWindow {
         return labelSumEl;
     }
 
-    public void setLabelSumEl(JLabel labelSumEl) {
-        this.labelSumEl = labelSumEl;
-    }
-
     public JScrollPane scrollPane;
 
     public JFrame getFrame() {
@@ -50,12 +46,13 @@ public class MainWindow {
     public MainWindow(Controller controller)
     {
         this.controller=controller;
-        table = new Table(controller);
 
         frame = new JFrame("Uh");
         frame.setSize(900,600);
+        table = new Table(this);
 
         JScrollPane jScrollPane = new JScrollPane(table.getTable());
+        jScrollPane.setPreferredSize(new Dimension(350,500));
         JButton buttonGenTable = new JButton("Сгенерировать");
         JButton buttonCreateGraphic = new JButton("Построить");
         JButton buttonChangeEl = new JButton("Изменить кол-во элементов");
@@ -63,11 +60,11 @@ public class MainWindow {
         JPanel settingsBox = new JPanel();
         labelSumEl = new JLabel();
         labelSize= new JLabel();
-        labelSumEl.setText("размер 19");
+        labelSumEl.setText("Размер таблицы:19");
         settingsBox.add(labelSumEl);
         labelSize.setText(" Масштаб:"+100+"%");
         settingsBox.add(buttonGenTable);
-        settingsBox.add(buttonCreateGraphic);
+       // settingsBox.add(buttonCreateGraphic);
         textField = new JTextField("19",5);
         textField.setPreferredSize(new Dimension(20,20));
         textField.setSize(20,20);
@@ -85,24 +82,10 @@ public class MainWindow {
 
         buttonCreateGraphic.addActionListener(new CreateGraphicListener(this));
         buttonGenTable.addActionListener(new GenTableListener(this));
+        buttonGenTable.addActionListener(new CreateGraphicListener(this));
         buttonChangeEl.addActionListener(new ChangeElListener(this));
 
     }
 }
 
-class ChangeElListener implements ActionListener
-{   MainWindow mainWindow;
 
-    ChangeElListener(MainWindow mainWindow)
-    {
-        this.mainWindow=mainWindow;
-    }
-    @Override
-    public void actionPerformed(ActionEvent e) {
-        if(!mainWindow.getTextField().getText().isEmpty()) {
-            mainWindow.getController().setSumEl(Integer.parseInt(mainWindow.getTextField().getText()));
-            mainWindow.getLabelSumEl().setText("размер "+mainWindow.getController().getSumEl());
-            mainWindow.getTable().changeRow();
-        }
-    }
-}

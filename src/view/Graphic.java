@@ -15,31 +15,52 @@ public  class Graphic extends JPanel {
    private MainWindow mainWindow;
    private int currWidth=500;
    private int currHeight=500;
-   private Controller controller;
+    private double scale = 1;
+    private Point oldPoint = new Point();
+    private int currentX=0;
+    private int currentY=0;
 
-   public Graphic(MainWindow mainWindow)
+    public Point getOldPoint() {
+        return oldPoint;
+    }
+    public void setOldPoint(Point oldPoint) {
+        this.oldPoint = oldPoint;
+    }
+    public void scalePlus() {scale+=0.1;}
+    public void scaleMinus() {scale-=0.1;}
+    public void setCurrentX(int currentX) {
+        this.currentX += currentX;
+    }
+    public void setCurrentY(int currentY) {
+        this.currentY += currentY;
+    }
+
+    public Graphic(MainWindow mainWindow)
     {
-        controller = mainWindow.getController();
-        setPreferredSize(new Dimension(currWidth,currHeight));
-        setSize(currWidth,currHeight);
+
+        setSizee(currWidth,currHeight);
         this.mainWindow=mainWindow;
 
-        addMouseListener(new MouseAdapterListener(mainWindow.getController()));
-        addMouseMotionListener(new MouseMotionListener(mainWindow));
+        addMouseListener(new MouseAdapterListener(this));
+        addMouseMotionListener(new MouseMotionListener(mainWindow,this));
 
          wheelListener();
 
+    }
+
+    public void setSizee(int currWidth,int currHeight)
+    {
+        setPreferredSize(new Dimension(currWidth,currHeight));
+        setSize(currWidth,currHeight);
     }
 
     public void wheelListener()
     {
         addMouseWheelListener(e -> {
             if (e.isControlDown()){
-
-                double scale = controller.getScale();
                 if (e.getWheelRotation() > 0 && scale>0.2){
 
-                    controller.scaleMinus();
+                    scaleMinus();
 
                     if(currWidth>scale*500)
                     {
@@ -55,10 +76,11 @@ public  class Graphic extends JPanel {
                     setSize(currWidth,currHeight);
                     mainWindow.getLabelSize().setText(" Масштаб:"+(int)(scale*100)+"%");
                     mainWindow.getFrame().repaint();
+
                 }
                 else if (scale < 2 && e.getWheelRotation() < 0){
 
-                    controller.scalePlus();
+                    scalePlus();
 
                     if(currWidth<scale*500)
                         currWidth = (int) (500 * scale);
@@ -78,26 +100,25 @@ public  class Graphic extends JPanel {
 
     protected void paintComponent(Graphics gh) {
 
+        Graphics2D drp = (Graphics2D) gh;
+        int sumEl = mainWindow.getTable().getTable().getRowCount();
 
-        Graphics2D drp = (Graphics2D)gh;
-        int sumEl = controller.getSumEl();
-        int currentX = controller.getCurrX();
-        int currentY = controller.getCurrY();
-        double scale = controller.getScale();
         int maxEl = mainWindow.getTable().getMaxEl();
 
-       Point endGraphic= new Point();
-        endGraphic.x= (int)(scale*( 0.15*maxEl+120));
-        endGraphic.y= (int)(scale*( 80+15*(sumEl+1)));
+        Point endGraphic = new Point();
+        endGraphic.x = (int) (scale * (0.15 * maxEl + 120));
+        endGraphic.y = (int) (scale * (80 + 15 * (sumEl + 1)));
 
-       if(currWidth!=currentX+endGraphic.x+100)
-           currWidth=currentX+endGraphic.x+100;
-
-        if(currHeight!=currentY+endGraphic.y+100)
+        if (currWidth != currentX + endGraphic.x + 100)
+        {
+            currWidth = currentX + endGraphic.x + 100;
+            setSizee(currWidth,currHeight);
+        }
+        if(currHeight != currentY+endGraphic.y+100)
+        {
             currHeight=currentY+endGraphic.y+100;
-
-        setPreferredSize(new Dimension(currWidth,currHeight));
-        setSize(currWidth,currHeight);
+            setSizee(currWidth,currHeight);
+        }
 
         if(currentX<0) currentX=0;
         if(currentY<0) currentY=0;
@@ -124,7 +145,7 @@ public  class Graphic extends JPanel {
         do{
             String vs = xScale*200+200+"";
             for(int shiftEL=0; shiftEL<vs.length();shiftEL++)
-                drp.drawString(vs.substring(shiftEL,shiftEL+1),currentX+(int)(scale*(60+xScale*30)),currentY+(int)(scale*(30+15*(sumEl+1)+10+shiftEL*10)));
+                drp.drawString(vs.substring(shiftEL,shiftEL+1),currentX+(int)(scale*(60+xScale*30)),currentY+(int)(scale*(32+15*(sumEl+1)+10+shiftEL*10)));
             drp.drawLine(currentX+(int)(scale*(xScale*30+60)),currentY+(int)(scale*(30+15*(sumEl+1)+5)),currentX+(int)(scale*(xScale*30+60)),currentY+(int)(scale*(30)));
             xScale++;
         }while(xScale*200<maxEl+70);
@@ -132,8 +153,9 @@ public  class Graphic extends JPanel {
         drp.drawString("0",currentX+(int)(scale*(15)),currentY+(int)(scale*(30+15*(sumEl+1) )));
 
          Table jTable = mainWindow.getTable();
-        for(int index=0;index<controller.getSumEl()-1;index++ )
+        for(int index=0;index<sumEl-1;index++ )
         {
+          if(index<mainWindow.getTable().getTableModel().getRowCount()){
             int y1 = currentY+ (int)(scale*(((30+15*(sumEl+1)) -15*jTable.getValue(index,0))));//----------------
             int x1 = currentX+ (int)(scale*((int) (30+0.15*jTable.getValue(index,1))));
 
@@ -143,10 +165,11 @@ public  class Graphic extends JPanel {
             drp.setStroke(new BasicStroke(3));
             drp.drawOval(x1-3,y1-3,6,6);
             drp.drawOval(x2-3,y2-3,6,6);
-            drp.drawLine(x1,y1,x2,y2);
+            drp.drawLine(x1,y1,x2,y2);}
+
         }
 
-        drp.drawString("Время сортировки",currentX+ (int)(scale*(40)),currentY+(int)(scale*(90+15*(sumEl+1))));
+        drp.drawString("Время сортировки",currentX+ (int)(scale*(60)),currentY+(int)(scale*(80+15*(sumEl+1))));
 
         String sumEl1 = "Количество элементов";
         for(int yScaleName=0; yScaleName<sumEl1.length();yScaleName++)

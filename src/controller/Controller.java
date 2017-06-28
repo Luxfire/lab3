@@ -1,44 +1,28 @@
 package controller;
 
-import model.*;
-import java.awt.*;
+import model.Model;
+
 
 public class Controller {
-    Model model;
+   private Model model;
+
    public Controller(Model model)
     {
          this.model = model;
     }
-
-    public int getArray(int massiveSize, int sortTime)
-    {
-        return model.getArrayResult(massiveSize,sortTime);
+    public int getOldSumEl() {
+        return model.getOldSumEl();
     }
-
-    public Point getOldPoint()
-    {
-        return model.getOldPoint();
+    public int getSortTime(int index) {
+        return model.getListElement(index).getSortTime();
     }
-    public Point getStartPoint()
-    {
-        return model.getStartPoint();
+    public int getSumEl(int index) {
+        return model.getListElement(index).getSumElInMassive();
     }
-    public int getSumEl(){return model.getSumEl();};
-    public int getCurrX(){return model.getCurrentX();}
-    public int getCurrY(){return model.getCurrentY();}
-    public double getScale(){return model.getScale();}
-
-    public void setCurrX(int currX){model.setCurrentX(currX);}
-    public void setCurrY(int currY){model.setCurrentY(currY);}
-    public void scalePlus(){model.scalePlus();}
-    public void scaleMinus(){model.scaleMinus();}
-    public void setOldPoint(Point oldPoint)
-    {
-        model.setOldPoint(oldPoint);
+    public void setOldSumEl(int oldSumEl) {
+        model.setOldSumEl(oldSumEl);
     }
-    public void setStartPoint(Point startPoint)
-    {
-        model.setStartPoint(startPoint);
-    }
+    public int getSumEl(){return model.getSumEl();}
     public void setSumEl(int sumEl){model.setSumEl(sumEl);}
+    public void genArray() {model.genArray();}
 }
